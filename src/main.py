@@ -192,12 +192,12 @@ def main(page: ft.Page):
     EndTime                 = ft.TextField()
     
     # ---------画像関係--------------
-    image_path = r'C:\\Github\\randomintro_flet\\IntroMusic\\Before_Quiz.png' # First Reachable Path
-    pil_photo = image.open(image_path) # Pillow Opens the Image
-    arr = np.asarray(pil_photo) # Numpy transforms it into an array
+    image_path              = MusicInfo.get_InitialImageFileName()
+    pil_photo               = image.open(image_path) # Pillow Opens the Image
+    arr                     = np.asarray(pil_photo) # Numpy transforms it into an array
 
-    pil_img = image.fromarray(arr) # Then you convert it in an image again
-    buff = BytesIO() # Buffer
+    pil_img                 = image.fromarray(arr) # Then you convert it in an image again
+    buff                    = BytesIO() # Buffer
     pil_img.save(buff, format="png") # Save it
 
 
@@ -246,6 +246,10 @@ def main(page: ft.Page):
             # 音楽再生処理
             pygame.mixer.music.load(MusicPath.value)
 
+            # 答えの初期化
+            AnswerText.value    = ""
+            Update_Image(MusicInfo.get_InitialImageFileName())
+
             # 音楽情報をState.pyに反映
             MusicInfo.set_MusicFileName(MusicName.value)
             MusicInfo.set_EndMusicTimeInfo(mp3_length)
@@ -253,15 +257,10 @@ def main(page: ft.Page):
         # 更新情報反映
         page.update()
 
-    # ------------出題ボタン押下時の挙動--------------
-    def Show_Answer(e):
-        # 答えの名前更新
-        AnswerText.value            = MusicName.value.replace(".wav", "").replace(".mp3", "")
-
-        # 答えの画像更新
-        image_path                  = MusicInfo.get_ImageFileName() # Read the path again
-        pil_photo                   = image.open(image_path[0])
-        pil_photo.thumbnail((300,300))                                   # Resize
+    # 答えの画像更新
+    def Update_Image(ImageFilePath):
+        pil_photo                   = image.open(ImageFilePath)
+        pil_photo.thumbnail((300,300))                                  # Resize
 
         arr                         = np.asarray(pil_photo)
         pil_img                     = image.fromarray(arr)
@@ -270,6 +269,14 @@ def main(page: ft.Page):
 
         newstring                   = base64.b64encode(buff.getvalue()).decode("utf-8")
         Answer_Image.src_base64     = newstring
+
+    # ------------出題ボタン押下時の挙動--------------
+    def Show_Answer(e):
+        # 答えの名前更新
+        AnswerText.value            = MusicName.value.replace(".wav", "").replace(".mp3", "")
+
+        # 答えの画像更新
+        Update_Image(MusicInfo.get_ImageFileName()[0])
 
         page.update()
 
@@ -296,7 +303,12 @@ def main(page: ft.Page):
                     horizontal_alignment = ft.CrossAxisAlignment.CENTER,
                     width=600,height = 300
                 )
-
         )
 
-ft.app(target=main)
+if __name__ == "__main__":
+    try:
+        ft.app(target=main)
+
+    # 強制終了した時の処理
+    finally:
+        pygame.mixer.music.stop()
