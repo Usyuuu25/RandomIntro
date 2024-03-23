@@ -155,8 +155,10 @@ class IntroQuizParts_3(ft.UserControl):
     def __init__(self):
         super().__init__()
         pygame.mixer.init()
-        self.SounfEffectPath_OK = MusicInfo.get_SoundEffectPath_OK()
-        self.SounfEffectPath_NG = MusicInfo.get_SoundEffectPath_NG()
+        self.SounfEffectName_OK = [i for i in os.listdir(MusicInfo.get_SoundEffectPath()) if 'OK' in i]
+        self.SounfEffectPath_OK = os.path.join(MusicInfo.get_SoundEffectPath(),self.SounfEffectName_OK[0])
+        self.SounfEffectName_NG = [i for i in os.listdir(MusicInfo.get_SoundEffectPath()) if 'NG' in i]
+        self.SounfEffectPath_NG = os.path.join(MusicInfo.get_SoundEffectPath(),self.SounfEffectName_NG[0])
 
     def Start_OKSE_Button(self,e):
         pygame.mixer.music.load(self.SounfEffectPath_OK)

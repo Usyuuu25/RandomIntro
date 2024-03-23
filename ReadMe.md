@@ -17,6 +17,11 @@
 
 ## 使い方
 
+### 注意点
+[Soundeffects]内に保存する正解、不正解BGMは自分で選び、保存して活用してください。  
+自分は以下URLからDLしました。  
+* 正解BGM(correct_answer.mp3)：
+* 不正解BGM(incorrect_answer.wav)
 ### GUI説明
 
 ![alt text](GUI説明.png)
@@ -50,10 +55,11 @@
   また選択中の音楽ファイルと同名の画像ファイルを[IntroMusic]内から探し、存在する場合は⑪に表示する。
 
 * ⑨　正解BGM再生ボタン
-  [Soundeffects]フォルダ内の”correct_answer.mp3”を再生する
+  [Soundeffects]フォルダ内の”OK”が付く効果音を再生する
 
 * ➉　不正解BGM再生ボタン
-  [Soundeffects]フォルダ内の”incorrect_answer.wav”を再生する
+  [Soundeffects]フォルダ内の”NG”が付く効果音を再生する
 
 * ⑪　正解情報表示領域
   ⑧を押すと、ここに正解名と正解画像を表示する
+
