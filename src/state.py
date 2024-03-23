@@ -1,6 +1,7 @@
 from pathlib import Path    #filePath情報取得用
 from typing import TypeVar, Generic, Union, Callable
 import time
+import os
 
 T = TypeVar('T')
 
@@ -18,8 +19,9 @@ class State(Generic[T]):
         self._MusicFilePath             = Path.cwd() / '..' / 'IntroMusic'    #音楽ファイルのPATH情報
         self._MusicFileName             = None
         self._ImageFileName             = Path.cwd() / '..' / 'IntroMusic' /'Before_Quiz.png'
-        self._SoundEffectPath_OK        = Path.cwd() / '..' / 'Soundeffects' / 'correct_answer.mp3'
-        self._SoundEffectPath_NG        = Path.cwd() / '..' / 'Soundeffects' / 'incorrect_answer.wav'                     
+        self._SoundEffectPath           = Path.cwd() / '..' / 'Soundeffects'
+        self._SoundEffectPath_OK        = '' 
+        self._SoundEffectPath_NG        = ''         
         
     #   情報取得群
     def get_MusicTitle(self):
@@ -50,7 +52,7 @@ class State(Generic[T]):
         return self._ImageFileName
     
     def get_InitialImageFileName(self):
-        return str(Path.cwd() / '..' / 'IntroMusic' /'Before_Quiz.png')
+        return (Path.cwd() / '..' / 'IntroMusic' /'Before_Quiz.png')
     
     # 開始時間を取得
     def get_Music_StartTime_Info(self):
@@ -66,10 +68,17 @@ class State(Generic[T]):
         else:
             return self._EndTime     
 
+    def get_SoundEffectPath(self):
+        return self._SoundEffectPath
+
     def get_SoundEffectPath_OK(self):
+        self._SounfEffectName_OK = [i for i in os.listdir(self._SoundEffectPath) if 'OK' in i]
+        self._SoundEffectPath_OK = os.path.join(self._SoundEffectPath,self._SounfEffectName_OK[0])
         return self._SoundEffectPath_OK
 
     def get_SoundEffectPath_NG(self):
+        self._SounfEffectName_NG = [i for i in os.listdir(self._SoundEffectPath) if 'NG' in i]
+        self._SoundEffectPath_NG = os.path.join(self._SoundEffectPath,self._SounfEffectName_NG[0])
         return self._SoundEffectPath_NG
 
     #   情報設定群

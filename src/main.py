@@ -155,17 +155,13 @@ class IntroQuizParts_3(ft.UserControl):
     def __init__(self):
         super().__init__()
         pygame.mixer.init()
-        self.SounfEffectName_OK = [i for i in os.listdir(MusicInfo.get_SoundEffectPath()) if 'OK' in i]
-        self.SounfEffectPath_OK = os.path.join(MusicInfo.get_SoundEffectPath(),self.SounfEffectName_OK[0])
-        self.SounfEffectName_NG = [i for i in os.listdir(MusicInfo.get_SoundEffectPath()) if 'NG' in i]
-        self.SounfEffectPath_NG = os.path.join(MusicInfo.get_SoundEffectPath(),self.SounfEffectName_NG[0])
 
     def Start_OKSE_Button(self,e):
-        pygame.mixer.music.load(self.SounfEffectPath_OK)
+        pygame.mixer.music.load(MusicInfo.get_SoundEffectPath_OK())
         pygame.mixer.music.play(1)                                 # 音楽の再生回数(1回)
 
     def Start_NGSE_Button(self,e):
-        pygame.mixer.music.load(self.SounfEffectPath_NG)
+        pygame.mixer.music.load(MusicInfo.get_SoundEffectPath_NG())
         pygame.mixer.music.play(1)                                  # 音楽の再生回数(1回)
 
     def build(self):
