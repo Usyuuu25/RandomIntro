@@ -12,7 +12,11 @@
     ├─OK.(mp3 or wav)
     └─NG.(mp3 or wav)
 └─bin/
-    └─RandomIntro.exe
+    └─（exe化するなら、ここに置いて）
+└─src
+    ├─main.py   (メイン)
+    └─state.py  (状態監視)
+
 </pre>
 
 ## 使い方
