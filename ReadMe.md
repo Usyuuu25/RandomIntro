@@ -4,8 +4,9 @@
 
 <pre>
 ・
-├─IntroMusic/
+├─InitData/
     ├─Before_Quiz.png
+├─IntroMusic/
     ├─(イントロ音楽ファイル名)(.mp3 or wav)
     └─(イントロ音楽ファイル名と同名の画像)(.png or jpg or jpeg)  
 ├─Soundeffects/
@@ -25,6 +26,8 @@
 [IntroMusic]音楽ファイルと同名の画像ファイル（png or jpeg形式）を置くと、答えボタンを押した時にその画像が表示されます。 
 
 ### 注意点
+[InitData]内の"Before_Quiz"は削除しないでください。アプリが起動しなくなります。  
+  
 [Soundeffects]内に保存する正解、不正解BGMは自分で選び、保存して活用してください。  
 自分は以下URLからDLしたものを使っています。  
 * 正解BGM(OK.(mp3 or wav))：https://commons.nicovideo.jp/works/nc69990

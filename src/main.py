@@ -44,7 +44,8 @@ class IntroQuizParts_1(ft.UserControl):
             self.Alert.open = True
             self.update()
         else:
-            pygame.mixer.music.load(self.MusicPath)            # 音楽ファイルの読み込み
+            pygame.mixer.music.load(self.MusicPath)            
+            # 音楽ファイルの読み込み
             pygame.mixer.music.set_volume(float(MusicInfo.get_MusicVolume() /100))
             # 指定した開始時間から再生
             pygame.mixer.music.play(start=float(self.StartTime.value))
@@ -186,7 +187,7 @@ def main(page: ft.Page):
     MusicPath               = ft.Text()
     # 選択中のファイル名
     MusicName               = ft.Text()
-    mp3_length              = 0
+    #mp3_length              = 0
     EndTime                 = ft.TextField()
     
     # ---------画像関係--------------
@@ -237,9 +238,9 @@ def main(page: ft.Page):
             # ファイルPATHを取得
             MusicPath.value    = os.path.join(MusicPath.value,MusicName.value)
             # 音楽ファイルの長さを取得
-            mp3_length         = mp3(MusicPath.value).info.length  # 音源の長さ取得
+            #mp3_length         = mp3(MusicPath.value).info.length  # 音源の長さ取得
             # 音楽ファイルの長さをGUIに反映
-            EndTime.value      = mp3_length
+            #EndTime.value      = mp3_length
 
             # 音楽再生処理
             pygame.mixer.music.load(MusicPath.value)
@@ -250,7 +251,7 @@ def main(page: ft.Page):
 
             # 音楽情報をState.pyに反映
             MusicInfo.set_MusicFileName(MusicName.value)
-            MusicInfo.set_EndMusicTimeInfo(mp3_length)
+            #MusicInfo.set_EndMusicTimeInfo(mp3_length)
             MusicInfo.set_ImageFileName(find_matching_image(MusicInfo.get_MusicFileName().replace(".wav", "").replace(".mp3", "")))
         # 更新情報反映
         page.update()

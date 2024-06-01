@@ -18,7 +18,7 @@ class State(Generic[T]):
         self._observers: list[Callable] = []
         self._MusicFilePath             = Path.cwd() / '..' / 'IntroMusic'    #音楽ファイルのPATH情報
         self._MusicFileName             = None
-        self._ImageFileName             = Path.cwd() / '..' / 'IntroMusic' /'Before_Quiz.png'
+        self._ImageFileName             = Path.cwd() / '..' / 'IntroMusic'
         self._SoundEffectPath           = Path.cwd() / '..' / 'Soundeffects'
         self._SoundEffectPath_OK        = '' 
         self._SoundEffectPath_NG        = ''         
@@ -52,7 +52,7 @@ class State(Generic[T]):
         return self._ImageFileName
     
     def get_InitialImageFileName(self):
-        return (Path.cwd() / '..' / 'IntroMusic' /'Before_Quiz.png')
+        return (Path.cwd() / '..' / 'InitData' /'Before_Quiz.png')
     
     # 開始時間を取得
     def get_Music_StartTime_Info(self):
