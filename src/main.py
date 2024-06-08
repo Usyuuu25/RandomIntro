@@ -65,7 +65,7 @@ class IntroQuizParts_1(ft.UserControl):
                         ft.Text(value="～"),
                         self.EndTime,
                         ],
-                        width=600, height=100, spacing=50)  
+                        width=1000, height=100, spacing=50)  
 
 # 3列目
 class IntroQuizParts_2(ft.UserControl):
@@ -100,7 +100,7 @@ class IntroQuizParts_2(ft.UserControl):
                                     ),
                             self.VolumeIconButton
                             ],
-                            width=600, height=100, spacing=10)
+                            width=1000, height=100, spacing=10)
 
     def Start_FullMusic_Button(self,e):
         # 選択中の音楽ファイルまでのPATH
@@ -168,14 +168,14 @@ class IntroQuizParts_3(ft.UserControl):
     def build(self):
         return  ft.Row([ft.FilledTonalButton("正解SE",on_click=self.Start_OKSE_Button,width=120, height=40),
                         ft.FilledTonalButton("不正解SE",on_click=self.Start_NGSE_Button,width=120, height=40)],
-                        width=600, height=100, spacing=90)
+                        width=1000, height=100, spacing=90)
    
 
 # ----------------メイン処理--------------------
 def main(page: ft.Page):
     # ---------ページレイアウト--------------
     page.title              = MusicInfo.get_MusicTitle()
-    page.window_width       = 600
+    page.window_width       = 1000
     page.window_height      = 900
     page.padding            = 20
 
@@ -189,6 +189,9 @@ def main(page: ft.Page):
     MusicName               = ft.Text()
     #mp3_length              = 0
     EndTime                 = ft.TextField()
+
+    # ---------ボタン関係--------------
+    dropdown = ft.Dropdown(label="Select Answer")
     
     # ---------画像関係--------------
     image_path              = MusicInfo.get_InitialImageFileName()
@@ -200,10 +203,17 @@ def main(page: ft.Page):
     pil_img.save(buff, format="png") # Save it
 
 
-    AnswerText              = ft.Text(MusicInfo.get_MusicFileName(),size=50)
+    AnswerText              = ft.Text(MusicInfo.get_MusicFileName(),size=30)
     image_string            = base64.b64encode(buff.getvalue()).decode('utf-8')
     Answer_Image            = Image(src_base64=image_string)
     
+    # ------------出題するファイル名の選択------------
+    def Select_Answer_File():
+        MusicPath.value        = MusicInfo.get_MusicFilePath()
+        Musicfiles             = list_wav_mp3_files(MusicPath.value)  # フォルダ内のファイル一覧を取得
+        for i in range(len(Musicfiles)):
+            dropdown.options.append(ft.dropdown.Option(Musicfiles[i]))
+
 # ------------出題ボタンの挙動--------------
     # mp3とwavのみをリストアップする
     def list_wav_mp3_files(directory):
@@ -227,6 +237,7 @@ def main(page: ft.Page):
         # 音楽ファイル群とPATH取得
         MusicPath.value        = MusicInfo.get_MusicFilePath()
         Musicfiles             = list_wav_mp3_files(MusicPath.value)  # フォルダ内のファイル一覧を取得
+        
         # 音楽ファイルがある場合
         if Musicfiles:
             # 前回取得したファイル名は除外
@@ -274,9 +285,16 @@ def main(page: ft.Page):
         # 答えの名前更新
         AnswerText.value            = MusicName.value.replace(".wav", "").replace(".mp3", "")
 
-        # 答えの画像更新
-        Update_Image(MusicInfo.get_ImageFileName()[0])
-
+        # 答えの画像更新（画像がなければ表示しない）
+        if os.path.isfile(Path.cwd() / '..' / 'IntroMusic'/MusicName.value.replace(".wav", ".png").replace(".mp3", ".png")):
+            Update_Image(MusicInfo.get_ImageFileName()[0])
+        elif os.path.isfile(Path.cwd() / '..' / 'IntroMusic'/MusicName.value.replace(".wav", ".jpg").replace(".mp3", ".jpg")):
+            Update_Image(MusicInfo.get_ImageFileName()[0])
+        elif os.path.isfile(Path.cwd() / '..' / 'IntroMusic'/MusicName.value.replace(".wav", ".jpeg").replace(".mp3", ".jpeg")):
+            Update_Image(MusicInfo.get_ImageFileName()[0])
+        else:
+            Update_Image(MusicInfo.get_InitialImageFileName())
+        # 更新情報反映
         page.update()
 
     # ページビューを追加 
@@ -284,7 +302,7 @@ def main(page: ft.Page):
         ft.Row([ft.FilledButton("出題", on_click=Set_Question, icon="QUESTION_MARK"),
                 MusicName
                 ],
-                width=600, height=100, spacing=50),
+                width=1000, height=100, spacing=50),
         IntroQuizParts_1(),
         IntroQuizParts_2(),
         # 境界
@@ -292,7 +310,7 @@ def main(page: ft.Page):
         ft.Row([ft.FilledTonalButton("答え",on_click=Show_Answer, width=120, height=40),
                 IntroQuizParts_3(),
                 ],
-                width=600, height=100, spacing=90),
+                width=1000, height=100, spacing=90),
         # 境界
         ft.Divider(height=12, thickness=5),
         # 答え
@@ -300,7 +318,7 @@ def main(page: ft.Page):
                     Answer_Image],
                     alignment=ft.MainAxisAlignment.CENTER,
                     horizontal_alignment = ft.CrossAxisAlignment.CENTER,
-                    width=600,height = 300
+                    width=1000,height = 300
                 )
         )
 
