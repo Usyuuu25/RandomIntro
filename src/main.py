@@ -204,6 +204,7 @@ def main(page: ft.Page):
 
     # DropDownボタンの内容が変化したとき
     def Change_Dropdown(e):
+        MusicPath.value    = MusicInfo.get_MusicFilePath()
         MusicName.value    = dropdown.value
         # ファイルPATHを取得
         MusicPath.value    = os.path.join(MusicPath.value,MusicName.value)
