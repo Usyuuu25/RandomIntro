@@ -18,6 +18,8 @@ from flet import Image
 # state.py用
 MusicInfo       = State()
 
+import asyncio
+
 # コンポーネント化するにはflet.UserControlクラスを継承し、buildメソッドでControlインスタンスを返す            
 # 2列目
 class IntroQuizParts_1(ft.UserControl):
@@ -168,7 +170,7 @@ class IntroQuizParts_3(ft.UserControl):
     def build(self):
         return  ft.Row([ft.FilledTonalButton("正解SE",on_click=self.Start_OKSE_Button,width=120, height=40),
                         ft.FilledTonalButton("不正解SE",on_click=self.Start_NGSE_Button,width=120, height=40)],
-                        width=1000, height=100, spacing=90)
+                        width=1000, height=100, spacing=250)
    
 
 # ----------------メイン処理--------------------
@@ -187,12 +189,43 @@ def main(page: ft.Page):
     MusicPath               = ft.Text()
     # 選択中のファイル名
     MusicName               = ft.Text()
-    #mp3_length              = 0
     EndTime                 = ft.TextField()
 
+# ------------DropDownボタン関連-----------
+    # DropDownボタンの初期化
+    def Init_dropdown(e):
+        dropdown.options       = []
+        MusicPath.value        = MusicInfo.get_MusicFilePath()
+        Musicfiles             = list_wav_mp3_files(MusicPath.value)  # フォルダ内のファイル一覧を取得
+
+        for i in range(len(Musicfiles)):
+            dropdown.options.append(ft.dropdown.Option(Musicfiles[i]))
+        page.update()
+
+    # DropDownボタンの内容が変化したとき
+    def Change_Dropdown(e):
+        MusicName.value    = dropdown.value
+        # ファイルPATHを取得
+        MusicPath.value    = os.path.join(MusicPath.value,MusicName.value)
+
+        # 音楽再生処理
+        pygame.mixer.music.load(MusicPath.value)
+
+        # 答えの初期化
+        AnswerText.value   = ""
+        Update_Image(MusicInfo.get_InitialImageFileName())
+
+        # 音楽情報をState.pyに反映
+        MusicInfo.set_MusicFileName(MusicName.value)
+        MusicInfo.set_ImageFileName(find_matching_image(MusicInfo.get_MusicFileName().replace(".wav", "").replace(".mp3", "")))
+        page.update()
+
     # ---------ボタン関係--------------
-    dropdown = ft.Dropdown(label="Select Answer")
-    
+    Random_Checkbox         = ft.Checkbox(  label="Random", value=False)  #Random再生するか否か
+    dropdown                = ft.Dropdown(  on_change=Change_Dropdown,
+                                            label="Select Answer",
+                                            width=700)        #Dropdownで再生曲選択
+
     # ---------画像関係--------------
     image_path              = MusicInfo.get_InitialImageFileName()
     pil_photo               = image.open(image_path) # Pillow Opens the Image
@@ -206,13 +239,6 @@ def main(page: ft.Page):
     AnswerText              = ft.Text(MusicInfo.get_MusicFileName(),size=30)
     image_string            = base64.b64encode(buff.getvalue()).decode('utf-8')
     Answer_Image            = Image(src_base64=image_string)
-    
-    # ------------出題するファイル名の選択------------
-    def Select_Answer_File():
-        MusicPath.value        = MusicInfo.get_MusicFilePath()
-        Musicfiles             = list_wav_mp3_files(MusicPath.value)  # フォルダ内のファイル一覧を取得
-        for i in range(len(Musicfiles)):
-            dropdown.options.append(ft.dropdown.Option(Musicfiles[i]))
 
 # ------------出題ボタンの挙動--------------
     # mp3とwavのみをリストアップする
@@ -242,27 +268,25 @@ def main(page: ft.Page):
         if Musicfiles:
             # 前回取得したファイル名は除外
             # 除外したリスト
-            Musicfiles = [item for item in Musicfiles if item != MusicName.value]
-            # ランダムに音楽ファイルを取得
-            MusicName.value    = random.choice(Musicfiles)  # ファイル一覧からランダムに1つ選択
-            MusicName.size     = 30
+            if Random_Checkbox.value == True:
+                Musicfiles = [item for item in Musicfiles if item != MusicName.value]
+                # ランダムに音楽ファイルを取得
+                MusicName.value    = random.choice(Musicfiles)  # ファイル一覧からランダムに1つ選択
+                MusicName.size     = 30
+            else:
+                MusicName.value    = dropdown.value
             # ファイルPATHを取得
             MusicPath.value    = os.path.join(MusicPath.value,MusicName.value)
-            # 音楽ファイルの長さを取得
-            #mp3_length         = mp3(MusicPath.value).info.length  # 音源の長さ取得
-            # 音楽ファイルの長さをGUIに反映
-            #EndTime.value      = mp3_length
 
             # 音楽再生処理
             pygame.mixer.music.load(MusicPath.value)
 
             # 答えの初期化
-            AnswerText.value    = ""
+            AnswerText.value   = ""
             Update_Image(MusicInfo.get_InitialImageFileName())
 
             # 音楽情報をState.pyに反映
             MusicInfo.set_MusicFileName(MusicName.value)
-            #MusicInfo.set_EndMusicTimeInfo(mp3_length)
             MusicInfo.set_ImageFileName(find_matching_image(MusicInfo.get_MusicFileName().replace(".wav", "").replace(".mp3", "")))
         # 更新情報反映
         page.update()
@@ -299,10 +323,13 @@ def main(page: ft.Page):
 
     # ページビューを追加 
     page.add(
-        ft.Row([ft.FilledButton("出題", on_click=Set_Question, icon="QUESTION_MARK"),
-                MusicName
-                ],
+        ft.Row([ft.FilledButton("音楽ファイル読み込み", on_click=Init_dropdown),
+                dropdown],
                 width=1000, height=100, spacing=50),
+        # ft.Row([ft.FilledButton("出題", on_click=Set_Question, icon="QUESTION_MARK"),
+        #         MusicName
+        #         ],
+        #         width=1000, height=100, spacing=50),
         IntroQuizParts_1(),
         IntroQuizParts_2(),
         # 境界
@@ -310,7 +337,7 @@ def main(page: ft.Page):
         ft.Row([ft.FilledTonalButton("答え",on_click=Show_Answer, width=120, height=40),
                 IntroQuizParts_3(),
                 ],
-                width=1000, height=100, spacing=90),
+                width=1000, height=100, spacing=250),
         # 境界
         ft.Divider(height=12, thickness=5),
         # 答え
