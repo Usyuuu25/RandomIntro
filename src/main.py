@@ -67,7 +67,7 @@ class IntroQuizParts_1(ft.UserControl):
                         ft.Text(value="～"),
                         self.EndTime,
                         ],
-                        width=1000, height=100, spacing=50)  
+                        width=600, height=100, spacing=50)  
 
 # 3列目
 class IntroQuizParts_2(ft.UserControl):
@@ -102,7 +102,7 @@ class IntroQuizParts_2(ft.UserControl):
                                     ),
                             self.VolumeIconButton
                             ],
-                            width=1000, height=100, spacing=10)
+                            width=600, height=100, spacing=10)
 
     def Start_FullMusic_Button(self,e):
         # 選択中の音楽ファイルまでのPATH
@@ -170,15 +170,15 @@ class IntroQuizParts_3(ft.UserControl):
     def build(self):
         return  ft.Row([ft.FilledTonalButton("正解SE",on_click=self.Start_OKSE_Button,width=120, height=40),
                         ft.FilledTonalButton("不正解SE",on_click=self.Start_NGSE_Button,width=120, height=40)],
-                        width=1000, height=100, spacing=250)
+                        width=600, height=100, spacing=50)
    
 
 # ----------------メイン処理--------------------
 def main(page: ft.Page):
     # ---------ページレイアウト--------------
     page.title              = MusicInfo.get_MusicTitle()
-    page.window_width       = 1000
-    page.window_height      = 900
+    page.window_width       = 1300
+    page.window_height      = 600
     page.padding            = 20
 
     # ---------音楽関係--------------
@@ -225,7 +225,7 @@ def main(page: ft.Page):
     Random_Checkbox         = ft.Checkbox(  label="Random", value=False)  #Random再生するか否か
     dropdown                = ft.Dropdown(  on_change=Change_Dropdown,
                                             label="Select Answer",
-                                            width=700)        #Dropdownで再生曲選択
+                                            width=500)        #Dropdownで再生曲選択
 
     # ---------画像関係--------------
     image_path              = MusicInfo.get_InitialImageFileName()
@@ -237,7 +237,7 @@ def main(page: ft.Page):
     pil_img.save(buff, format="png") # Save it
 
 
-    AnswerText              = ft.Text(MusicInfo.get_MusicFileName(),size=30)
+    AnswerText              = ft.Text(MusicInfo.get_MusicFileName(),size=25)
     image_string            = base64.b64encode(buff.getvalue()).decode('utf-8')
     Answer_Image            = Image(src_base64=image_string)
 
@@ -273,7 +273,7 @@ def main(page: ft.Page):
                 Musicfiles = [item for item in Musicfiles if item != MusicName.value]
                 # ランダムに音楽ファイルを取得
                 MusicName.value    = random.choice(Musicfiles)  # ファイル一覧からランダムに1つ選択
-                MusicName.size     = 30
+                MusicName.size     = 25
             else:
                 MusicName.value    = dropdown.value
             # ファイルPATHを取得
@@ -324,31 +324,41 @@ def main(page: ft.Page):
 
     # ページビューを追加 
     page.add(
-        ft.Row([ft.FilledButton("音楽ファイル読み込み", on_click=Init_dropdown),
-                dropdown],
-                width=1000, height=100, spacing=50),
-        # ft.Row([ft.FilledButton("出題", on_click=Set_Question, icon="QUESTION_MARK"),
-        #         MusicName
-        #         ],
-        #         width=1000, height=100, spacing=50),
-        IntroQuizParts_1(),
-        IntroQuizParts_2(),
-        # 境界
-        ft.Divider(height=12, thickness=5),
-        ft.Row([ft.FilledTonalButton("答え",on_click=Show_Answer, width=120, height=40),
-                IntroQuizParts_3(),
-                ],
-                width=1000, height=100, spacing=250),
-        # 境界
-        ft.Divider(height=12, thickness=5),
-        # 答え
-        ft.Column([ AnswerText,
-                    Answer_Image],
-                    alignment=ft.MainAxisAlignment.CENTER,
-                    horizontal_alignment = ft.CrossAxisAlignment.CENTER,
-                    width=1000,height = 300
-                )
+        ft.Row(
+            [
+                ft.Column(
+                    [
+                        ft.FilledButton("音楽ファイル読み込み", on_click=Init_dropdown),
+                        dropdown,
+                        # ft.Row([ft.FilledButton("出題", on_click=Set_Question, icon="QUESTION_MARK"),
+                        #         MusicName
+                        #         ],
+                        #         width=1000, height=100, spacing=50),
+                        IntroQuizParts_1(),
+                        IntroQuizParts_2(),
+                        # 境界
+                        ft.Divider(height=12, thickness=5),
+                        ft.Row([ft.FilledTonalButton("答え",on_click=Show_Answer, width=120, height=40),
+                                IntroQuizParts_3(),
+                                ],
+                                width=600, height=100, spacing=50),
+                        # 境界
+                        ft.Divider(height=12, thickness=5),
+                    ],
+                ),
+                ft.VerticalDivider(width=1),
+
+                # 答え
+                ft.Column([ AnswerText,
+                            Answer_Image],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            horizontal_alignment = ft.CrossAxisAlignment.CENTER,
+                            width=600,height = 300,spacing=20
+                        )
+            ],
+            expand=True,
         )
+    )
 
 if __name__ == "__main__":
     try:
